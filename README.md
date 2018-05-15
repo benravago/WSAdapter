@@ -1,6 +1,22 @@
 # WSAdapter
 
-Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a javascript library I had written for some legacy AXIS 1.4 application.  The single script file is in interop/WSAdapter.js.  The interop/test.html file shows basic use of the WSAdapter functions.
+Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a javascript library I had written for some legacy AXIS 1.4 application.  The single script file is in interop/WSAdapter.js.  The interop/test.html file shows basic use of the WSAdapter functions.  A small example:
+```
+<script src="./WSAdapter.js"></script>
+<script>
+  WSAdapter.getDefinition(http://ws.com/MyWebService/example?wsdl')
+    .then((wsdl) => {
+       let api = wsdl.getProxy('login','logoff');
+       let token = api.login('username','password')
+       console.log('token',token);
+       api.logoff(token);
+     })
+    .catch((e) => {
+       console.log('could not get WSDL '+e);
+     });
+}
+```
+
 
 ### How to test using the Axis 1.4 SimpleAxisServer
 
@@ -30,6 +46,8 @@ Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a ja
 1. The most likely source of the javax.activation and javax.mail jars will be from public maven repositories. Try [mail/1.4](http://central.maven.org/maven2/javax/mail/mail/1.4/) and [activation/1.1](http://central.maven.org/maven2/javax/activation/activation/1.1/).
 
 2. The tests in interop/test.html are based on the java code from samples/echo/TestClient.java.  Some tests will fail (echoMap, echoMapArray,echo2DStringArray,echoNestedArray) since these require additional support for 'xsd:anyType' and nested array elements.  I'll probably get around to these eventually, as time permits.
+
+3. I also had some html/js code for a move verbose api demonstrator.  I hope to be able to port that to ES6 as well.
 
 
 
