@@ -28,6 +28,8 @@ Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a ja
 
 4. Download javax.activation and javax.mail jars and move them to the axis-1_4/lib directory.
 
+5. Fix up the Java path in <code>**./server**</code>.  Also, you probably only need a JRE.
+
 5. Start SimpleAxisServer with <code>**./server start**</code>.  When the server is ready you should see this message:
 ```
   INFO: starting up SimpleAxisServer on port 8080 (...)
