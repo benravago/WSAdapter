@@ -1,8 +1,9 @@
 #
 cd $(dirname $0)
+cd ./axis-1_4
 
 A=$(ls ./lib/*.jar | tr '\n' ':')
-J="/opt/jdk1.8/bin/java -cp .:./worker.jar:$A"
+J="/opt/jdk1.8/bin/java -cp ..:../worker.jar:$A"
 
 set -x
 case $1 in
@@ -14,7 +15,7 @@ case $1 in
     ;;
   deploy)
     $J org.apache.axis.client.AdminClient ./samples/echo/deploy.wsdd
-    curl -v http://localhost:8080/axis/services/echo?wsdl
+    # curl -v http://localhost:8080/axis/services/echo?wsdl
     ;;
   *)
     echo "$0 [start|stop|deploy]"
