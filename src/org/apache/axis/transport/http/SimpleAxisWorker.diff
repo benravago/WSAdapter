@@ -1,0 +1,46 @@
+--- 1.4/org/apache/axis/transport/http/SimpleAxisWorker.java	2018-05-11 10:53:50.961465064 -0400
++++ src/org/apache/axis/transport/http/SimpleAxisWorker.java	2018-05-12 13:41:10.416351900 -0400
+@@ -307,6 +307,13 @@
+                         out.write("301 Redirect\nLocation: /axis/\n\n".getBytes());
+                         out.flush();
+                         return;                        
++                    } else {
++                        String fn = fileName.toString();
++                        if (!fn.startsWith("axis/")) {
++                            sendResource(fn,out);
++                            out.flush();
++                            return;
++                        }
+                     }
+                     out.write(status);
+ 
+@@ -534,6 +541,29 @@
+ 
+     }
+ 
++    private void sendResource(String fileName, OutputStream out) throws Exception {
++
++        java.io.InputStream in = ClassLoader.getSystemResourceAsStream(fileName);
++        if (in == null) {
++            out.write("404 Not Found\n\n".getBytes());
++            return;
++        }
++
++        String ct = java.net.URLConnection.guessContentTypeFromName(fileName);
++        ct = (ct != null) ? ct
++           : fileName.endsWith(".js") ? "application/javascript"
++           : fileName.endsWith(".css") ? "text/css"
++           : "application/octet-stream";
++
++        ct = "200 OK\nContent-Type: "+ct+"\n\n";
++        out.write(ct.getBytes());
++
++        byte[] buf = new byte[1024];
++        int len = 0;
++        while ((len = in.read(buf)) > -1) out.write(buf,0,len);
++        in.close();
++    }
++
+     protected void invokeMethodFromGet(String methodName, String args) throws Exception {
+ 
+     }

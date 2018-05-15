@@ -1,0 +1,22 @@
+#
+cd $(dirname $0)
+
+A=$(ls ./lib/*.jar | tr '\n' ':')
+J="/opt/jdk1.8/bin/java -cp .:./worker.jar:$A"
+
+set -x
+case $1 in
+  start)
+    $J org.apache.axis.transport.http.SimpleAxisServer &
+    ;;
+  stop)
+    pkill -f 'SimpleAxisServer'
+    ;;
+  deploy)
+    $J org.apache.axis.client.AdminClient ./samples/echo/deploy.wsdd
+    curl -v http://localhost:8080/axis/services/echo?wsdl
+    ;;
+  *)
+    echo "$0 [start|stop|deploy]"
+    ;;
+esac

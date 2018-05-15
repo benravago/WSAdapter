@@ -1,0 +1,470 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>interop tests</title>
+<link rel="stylesheet" type="text/css" href="test.css">
+<script src="./WSAdapter.js"></script>
+</head>
+<body onload="setUp()">
+
+<script>
+function setUp() {
+  let origin = window.location.origin;
+  WSAdapter.getDefinition(origin+'/axis/services/echo?wsdl')
+    .then((wsdl) => {
+       window.TestSuite = wsdl.getProxy(testSuite());
+       window.EchoService = setHost(wsdl);
+       byId('testSuite').disabled = false;
+     })
+    .catch((e) => {
+       console.log('could not get WSDL '+e);
+     });
+}
+
+function setHost(wsdl) {
+  let u = new URL(wsdl.url);
+  u.host = window.location.host;
+  wsdl.url = u.toString();
+  return wsdl;
+}
+</script>
+
+<script id="echoString">
+function echoString() {
+  return [
+    TestSuite.echoString("abccdefg"),
+    "abccdefg"
+  ];
+}
+</script>
+<script id="echoStringArray">
+function echoStringArray() {
+  return [
+    TestSuite.echoStringArray(["abc","def"]),
+    ["abc","def"]
+  ];
+}
+</script>
+<script id="echoInteger">
+function echoInteger() {
+  return [
+    TestSuite.echoInteger(42),
+    42
+  ];
+}
+</script>
+<script id="echoIntegerArray">
+function echoIntegerArray() {
+  return [
+    TestSuite.echoIntegerArray([42]),
+    [42]
+  ];
+}
+</script>
+<script id="echoFloat">
+function echoFloat() {
+  return [
+    TestSuite.echoFloat(3.7),
+    3.7
+  ];
+}
+</script>
+<script id="echoFloatArray">
+function echoFloatArray() {
+  return [
+    TestSuite.echoFloatArray([3.7,7]),
+    [3.7,7]
+  ];
+}
+</script>
+<script id="echoStruct">
+function echoStruct() {
+  let Struct = {
+    varString: "Hello",
+    varInt:    5,
+    varFloat:  103.0
+  };
+  return [
+    TestSuite.echoStruct(Struct),
+    Struct
+  ];
+}
+</script>
+<script id="echoStructArray">
+function echoStructArray() {
+  return [
+    TestSuite.echoStructArray([
+      { varInt:1, varString:"one", varFloat: 1.1 },
+      { varInt:2, varString:"two", varFloat: 2.2 },
+      { varInt:3, varString:"three", varFloat: 3.3 }
+    ]),
+    [
+      { varInt:1, varString:"one", varFloat: 1.1 },
+      { varInt:2, varString:"two", varFloat: 2.2 },
+      { varInt:3, varString:"three", varFloat: 3.3 }
+    ]
+  ];
+}
+</script>
+<script id="echoVoid">
+function echoVoid() {
+  return [
+    TestSuite.echoVoid(),
+    null
+  ];
+}
+</script>
+<script id="echoBase64">
+function echoBase64() {
+  let Base64 = btoa('Base64');
+  return [
+    TestSuite.echoBase64(Base64),
+    Base64 // "QmFzZTY0"
+  ];
+}
+</script>
+<script id="echoHexBinary">
+function echoHexBinary() {
+  let Base16 = toHex('3D');
+  return [
+    TestSuite.echoHexBinary(Base16),
+    Base16 // "3344"
+  ];
+
+  function toHex(s) {
+    let h = '';
+    for (let i = 0; i < s.length; i++) {
+      h += s.charCodeAt(i).toString(16);
+    }
+    return h;
+  }
+}
+</script>
+<script id="echoDate">
+function echoDate() {
+  let ISO8601 = new Date().toISOString();
+  return [
+    TestSuite.echoDate(ISO8601),
+    ISO8601 // "2018-05-15T15:15:31.333Z"
+  ];
+}
+</script>
+<script id="echoDecimal">
+function echoDecimal() {
+  return [
+    TestSuite.echoDecimal(3.14159),
+    3.14159
+  ];
+}
+</script>
+<script id="echoBoolean">
+function echoBoolean() {
+  return [
+    TestSuite.echoBoolean(true),
+    true
+  ];
+}
+</script>
+<script id="echoMap">
+function echoMap() {
+  return ["not implemented yet",0];
+}
+</script>
+<script id="echoMapArray">
+function echoMapArray() {
+  return ["not implemented yet",0];
+}
+</script>
+<script id="echoStructAsSimpleTypes">
+function echoStructAsSimpleTypes() {
+  return [
+    TestSuite.echoStructAsSimpleTypes({
+      varString: "Hello",
+      varInt: 5,
+      varFloat: 103.0
+    }),
+    {
+      outputString: "Hello",
+      outputInteger: 5,
+      outputFloat: 103.0
+    }
+  ];
+}
+</script>
+<script id="echoSimpleTypesAsStruct">
+function echoSimpleTypesAsStruct() {
+  return [
+    TestSuite.echoSimpleTypesAsStruct(
+      "Hello", 5, 103.0
+    ),
+    {
+      varString: "Hello",
+      varInt: 5,
+      varFloat: 103.0
+    }
+  ];
+}
+</script>
+<script id="echo2DStringArray">
+function echo2DStringArray() {
+  return ["not implemented yet",0];
+}
+</script>
+<script id="echoNestedStruct">
+function echoNestedStruct() {
+  let Nested = {
+    varString: "AXIS",
+    varInt: 1,
+    varFloat: 3.0,
+    varStruct: {
+      varInt: 5,
+      varString: "Hello",
+      varFloat: 103.0
+    }
+  };
+  return [
+    TestSuite.echoNestedStruct(Nested),
+    Nested
+  ];
+}
+</script>
+<script id="echoNestedArray">
+function echoNestedArray() {
+  return ["not implemented yet",0];
+}
+</script>
+<script id="echoToken">
+function echoToken() {
+  return [
+    TestSuite.echoToken("abccdefg"),
+    "abccdefg"
+  ];
+}
+</script>
+<script id="echoNormalizedString">
+function echoNormalizedString() {
+  return [
+    TestSuite.echoNormalizedString("abccdefg"),
+    "abccdefg"
+  ];
+}
+</script>
+<script id="echoUnsignedLong">
+function echoUnsignedLong() {
+  return [
+    TestSuite.echoUnsignedLong(100),
+    100
+  ];
+}
+</script>
+<script id="echoUnsignedInt">
+function echoUnsignedInt() {
+  return [
+    TestSuite.echoUnsignedInt(101),
+    101
+  ];
+}
+</script>
+<script id="echoUnsignedShort">
+function echoUnsignedShort() {
+  return [
+    TestSuite.echoUnsignedShort(102),
+    102
+  ];
+}
+</script>
+<script id="echoUnsignedByte">
+function echoUnsignedByte() {
+  return [
+    TestSuite.echoUnsignedByte(103),
+    103
+  ];
+}
+</script>
+<script id="echoNonNegativeInteger">
+function echoNonNegativeInteger() {
+  return [
+    TestSuite.echoNonNegativeInteger(1234567890123456),
+    1234567890123456
+  ];
+}
+</script>
+<script id="echoPositiveInteger">
+function echoPositiveInteger() {
+  return [
+    TestSuite.echoPositiveInteger(9007199254740991),
+    9007199254740991
+  ];
+  // +/- 9007199254740991  Number.MAX_SAFE_INTEGER.
+}
+</script>
+<script id="echoNonPositiveInteger">
+function echoNonPositiveInteger() {
+  return [
+    TestSuite.echoNonPositiveInteger(-1234567890123456),
+    -1234567890123456
+  ];
+}
+</script>
+<script id="echoNegativeInteger">
+function echoNegativeInteger() {
+  return [
+    TestSuite.echoNegativeInteger(-9007199254740991),
+    -9007199254740991
+  ];
+  // +/- 9007199254740991  Number.MAX_SAFE_INTEGER.
+}
+</script>
+
+<!-- test harness -->
+
+<script>
+function onSelect(s) {
+  reset('');
+  let testName = s.options[s.selectedIndex].value;
+  if (testName.startsWith('echo')) {
+    testOne(testName);
+  } else {
+    if (testName === 'all') {
+      testAll();
+    } else {
+      reset('');
+    }
+  }
+}
+
+function byId(id) {
+  return document.getElementById(id);
+}
+function reset(s) {
+  byId('testScript').value = s;
+  byId('testResult').value = '';
+  byId('status').className = 'ready';
+}
+function note(testName,status) {
+  byId('testScript').value += testName + ' -> '+status+'\n';
+}
+function error(e) {
+  if (e instanceof Error) {
+    console.log('e',e);
+    return e.toString();
+  } else {
+    return JSON.stringify(e,null,2);
+  }
+}
+
+function testSuite() {
+  let a = [];
+  for (let o of byId('testSuite').options) {
+    let v = o.value;
+    if (v.startsWith('echo')) a.push(v);
+  }
+  return a;
+}
+
+function testAll() {
+  reset('');
+  for (let testName of testSuite()) {
+    test(testName)
+      .then(() => note(testName,'OK') )
+      .catch(() => note(testName,'failed') );
+  }
+}
+
+function testOne(testName) {
+  reset(byId(testName).textContent);
+  test(testName)
+    .then(() => byId('status').className = 'pass' )
+    .catch((e) => {
+       byId('testResult').value = error(e);
+       byId('status').className = 'fail';
+    });
+}
+
+async function test(testName) {
+  let [promise,expect] = window[testName]();
+  let result = await promise;
+  let x = AXIS.check(testName,result);
+  let y = serialize(x);
+  let z = serialize(expect);
+  if (y !== z) {
+    console.log(testName);
+    console.log('y',y);
+    console.log('z',z);
+    throw result;
+  }
+}
+</script>
+
+<script>
+function serialize(v) {
+  return item(v);
+
+  function item(v) {
+    if (v === null || v === undefined) return null;
+    switch (typeof v) {
+      case 'object': return Array.isArray(v) ? array(v) : object(v);
+      case 'string': return JSON.stringify(v);
+      default: return v.toString();
+    }
+  }
+
+  function object(o) {
+    let i = [];
+    for (let k of Object.keys(o).sort()) {
+      i.push(k+':'+item(o[k]));
+    }
+    return '{'+i.join(',')+'}';
+  }
+
+  function array(a) {
+    let i = [];
+    for (let v of a) i.push(item(v));
+    return '['+i.join(',')+']';
+  }
+}
+</script>
+
+<br><textarea id="testScript" readonly></textarea>
+<br><textarea id="testResult" readonly></textarea>
+<p>
+<span id='status' class='ready'></span><br>
+<select id='testSuite' onchange="onSelect(this)" disabled>
+ <option value='all'>All tests</option>
+ <option selected></option>
+ <option>echoString</option>
+ <option>echoStringArray</option>
+ <option>echoInteger</option>
+ <option>echoIntegerArray</option>
+ <option>echoFloat</option>
+ <option>echoFloatArray</option>
+ <option>echoStruct</option>
+ <option>echoStructArray</option>
+ <option>echoVoid</option>
+ <option>echoBase64</option>
+ <option>echoHexBinary</option>
+ <option>echoDate</option>
+ <option>echoDecimal</option>
+ <option>echoBoolean</option>
+ <option>echoMap</option>
+ <option>echoMapArray</option>
+ <option>echoStructAsSimpleTypes</option>
+ <option>echoSimpleTypesAsStruct</option>
+ <option>echo2DStringArray</option>
+ <option>echoNestedStruct</option>
+ <option>echoNestedArray</option>
+ <option>echoToken</option>
+ <option>echoNormalizedString</option>
+ <option>echoUnsignedLong</option>
+ <option>echoUnsignedInt</option>
+ <option>echoUnsignedShort</option>
+ <option>echoUnsignedByte</option>
+ <option>echoNonNegativeInteger</option>
+ <option>echoPositiveInteger</option>
+ <option>echoNonPositiveInteger</option>
+ <option>echoNegativeInteger</option>
+</select>
+
+</body>
+</html>
