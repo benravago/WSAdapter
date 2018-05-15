@@ -49,5 +49,7 @@ Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a ja
 
 3. I also had some html/js code for a move verbose api demonstrator.  I hope to be able to port that to ES6 as well.
 
+4. 'worker.jar' contains a patched org.apache.axis.transport.http.SimpleAxisWorker class file.  The patch is in src/org/apache/axis/transport/http/SimpleAxisWorker.diff and the patched source is beside that.  The patch makes SimpleAxisWorker serve requests that don't start with 'axis/' as resource streams from the classpath.  That's how SimpleAxisServer is able to return the interop/test.{html,css} files.  Without this patch, a more complicated web server (like Tomcat) would have to be set up for the 'echo' application.
+
 
 
