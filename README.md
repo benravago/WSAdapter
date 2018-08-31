@@ -4,7 +4,6 @@ Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a ja
 ```
 <script src="./WSAdapter.js"></script>
 <script>
-
   WSAdapter.getDefinition(http://ws.com/MyWebService/example?wsdl')
     .then((wsdl) => {
        let api = wsdl.getProxy('login','logoff');
@@ -15,7 +14,7 @@ Yet another javascript SOAP client.  This one is an Ecmascript 6 rewrite of a ja
     .catch((e) => {
        console.log('could not get WSDL '+e);
      });
-
+</script>
 ```
 
 ### How to test using the Axis 1.4 SimpleAxisServer
